@@ -1,3 +1,12 @@
+const multer = require("multer"); //package pour la gestion des fichiers entrants
+
+const MIME_TYPES = {
+  "image/jpg": "jpg",
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+
 //objet de configuration de multer
 //diskStorage : enregistrement sur le disque
 //besoin de 2 éléments

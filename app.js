@@ -13,8 +13,8 @@ app.use(express.json());
 app.use("/images", express.static("images")); //livre les images
 
 const projectRoutes = require("./routes/project");
-const usersRoutes = require("./routes/user");
-const User = require("./models/User");
+const userRoutes = require("./routes/user");
+const User = require("./models/Users");
 const Book = require("./models/Projects");
 
 const mongoConnectionConfig = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${process.env.MONGO_DB}?${process.env.MONGO_OPTIONS}`;
