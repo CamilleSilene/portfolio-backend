@@ -15,7 +15,7 @@ app.use("/images", express.static("images")); //livre les images
 const projectRoutes = require("./routes/project");
 const userRoutes = require("./routes/user");
 const User = require("./models/Users");
-const Book = require("./models/Projects");
+const Projects = require("./models/Projects");
 
 const mongoConnectionConfig = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_URL}/${process.env.MONGO_DB}?${process.env.MONGO_OPTIONS}`;
 
@@ -32,5 +32,6 @@ app.use(cors());
 app.use("/api/project", projectRoutes);
 app.use("/api/auth", userRoutes);
 
+app.use("/pictures", express.static("pictures")); //livre les images
 //exporter l'app pour pouvoir utiliser sur les autres fichiers
 module.exports = app;
