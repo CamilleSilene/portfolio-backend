@@ -1,26 +1,35 @@
 const Project = require("../models/Projects");
+const db = require("mongodb");
 const fs = require("fs");
+const path = require("path");
+const sharp = require("sharp");
 
-
+//Get All Projects
 exports.getAllProject = (req, res, next) => {
   Project.find()
     .then((projects) => res.status(200).json(projects))
     .catch((error) => res.status(400).json({ error }));
 };
 
+//Get One Project
 exports.getOneProject = (req, res, next) => {
   Project.findOne({ _id: req.params.id })
     .then((project) => res.status(200).json(project))
     .catch((error) => res.status(404).json({ error }));
 };
 
-exports.createProject = (req, res, next) => {
-  const projectObject = req.body;
-  delete projectObject._id;
 
+//Create Project
+exports.createProject = (req, res, next) => {
+  const projectObject = JSON.parse(req.body.project);
+  console.log(req.body)
+  delete projectObject._id;
+  // console.log(req.file.filename)
   const project = new Project({
     ...projectObject,
+    cover: `${req.protocol}://${req.get("host")}/pictures/${req.file.filename}`,
   });
+  console.log(project.cover);
   project
     .save()
     .then(() => {
@@ -37,21 +46,29 @@ exports.createProject = (req, res, next) => {
     });
 };
 
+//Delete Project
 exports.deleteProject = (req, res, next) => {
   Project.findOne({ _id: req.params.id })
     .then((project) => {
-      Project.deleteOne({ _id: req.params.id })
-      .then(() => {
-        res.status(200).json({ message: "Objet supprimé !" });
-      })
-      .catch((error) => res.status(401).json({ error }));
+      if (project.userId != req.auth.userId) {
+        res.status(401).json({ message: "Not authorized" });
+      } else {
+        const filename = project.cover.split("/pictures/")[1];
+        fs.unlink(`pictures/${filename}`, () => {
+          Project.deleteOne({ _id: req.params.id })
+            .then(() => {
+              res.status(200).json({ message: "Projet supprimé !" });
+            })
+            .catch((error) => res.status(401).json({ error }));
+        });
+      }
     })
     .catch((error) => {
       res.status(500).json({ error });
     });
 };
 
-
+//Modify Project
 exports.modifyProject = (req, res, next) => {
   const projectObject = { ...req.body };
 
@@ -71,3 +88,16 @@ exports.modifyProject = (req, res, next) => {
 };
 
 
+//Get All Tags
+exports.getAllTags = (req, res, next) => {
+  Project.find().distinct("tags")
+  .then((tags) => res.status(200).json(tags));
+};
+
+
+//Get Projects by tag
+exports.getProjectsByTag = (req, res, next) => {
+  Project.find({ tags: req.params.tag })
+    .then((tag) => res.status(200).json(tag))
+    .catch((error) => res.status(404).json({ error }));
+};

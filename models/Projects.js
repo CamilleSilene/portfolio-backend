@@ -5,7 +5,8 @@ const mongoose = require("mongoose");
 const projectSchema = mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  pictures: [{ type: String, required: false }],
+  cover: [{ type: String, required: false }],
+  // pictures: [{ type: String, required: false }],
   link: { type: String, required: false},
   github: { type: String, required: true },
   tags: [{ type: String, required: true }],  

@@ -34,4 +34,4 @@ const storage = multer.diskStorage({
   //méthode .single car c'est un fichier unique
   //fichier image uniquement
   
-  module.exports = multer({ storage }).single("picture");
+  module.exports = multer({ storage }).single("cover");
