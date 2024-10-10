@@ -5,12 +5,13 @@ const mongoose = require("mongoose");
 const projectSchema = mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
-  cover: [{ type: String, required: false }],
-  // pictures: [{ type: String, required: false }],
+  undertitle: {type: String, required: true },
+  cover: [{ type: String, required: true }],
+  pictures: [{ type: String, required: false }],
   link: { type: String, required: false},
   github: { type: String, required: true },
   tags: [{ type: String, required: true }],  
-});
+}, {strict:false});
 
 //export du schéma pour le rendre disponible pour Express
 //la méthode .model le rend utilisable

@@ -33,5 +33,6 @@ app.use("/api/project", projectRoutes);
 app.use("/api/auth", userRoutes);
 
 app.use("/pictures", express.static("pictures")); //livre les images
+app.use("/documents", express.static("documents")); //livre les images
 //exporter l'app pour pouvoir utiliser sur les autres fichiers
 module.exports = app;

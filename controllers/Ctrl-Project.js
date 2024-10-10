@@ -27,6 +27,7 @@ exports.createProject = (req, res, next) => {
   // console.log(req.file.filename)
   const project = new Project({
     ...projectObject,
+    
     cover: `${req.protocol}://${req.get("host")}/pictures/${req.file.filename}`,
   });
   console.log(project.cover);
@@ -48,44 +49,39 @@ exports.createProject = (req, res, next) => {
 
 //Delete Project
 exports.deleteProject = (req, res, next) => {
+  console.log("delete project ",req.params.id)
   Project.findOne({ _id: req.params.id })
     .then((project) => {
-      if (project.userId != req.auth.userId) {
-        res.status(401).json({ message: "Not authorized" });
-      } else {
-        const filename = project.cover.split("/pictures/")[1];
+      console.log(project);
+        const filename = project.cover[0].split("/pictures/")[1];
         fs.unlink(`pictures/${filename}`, () => {
           Project.deleteOne({ _id: req.params.id })
             .then(() => {
               res.status(200).json({ message: "Projet supprimé !" });
             })
-            .catch((error) => res.status(401).json({ error }));
+            .catch((error) => res.status(401).json({ error: "cant delete project" }));
         });
-      }
     })
     .catch((error) => {
-      res.status(500).json({ error });
+      res.status(500).json({ error: "project not found" });
     });
 };
 
 //Modify Project
 exports.modifyProject = (req, res, next) => {
-  const projectObject = { ...req.body };
-
-  Project.findOne({ _id: req.params.id })
-    .then((project) => {
-        Project.updateOne(
-          { _id: req.params.id },
-          { ...projectObject, _id: req.params.id }
-        )
-          .then(() => res.status(200).json({ message: "Projet modifié!" }))
-          .catch((error) => res.status(401).json({ error }));
+  console.log(req.body.project);
+  const projectObject = req.file ?
+{
+  ...JSON.parse(req.body.project),
+  cover: `${req.protocol}://${req.get('host')}/pictures/${req.file.filename}`,
+} : {...req.body};
+  console.log(projectObject)
+  Project.updateOne({ _id: req.params.id },{ ...projectObject, _id: req.params.id }, {upsert: true})
+        .then(() => res.status(200).json({ message: "Projet modifié!" }))
+        .catch((error) => res.status(401).json({ error }));
       }
-    )
-    .catch((error) => {
-      res.status(400).json({ error });
-    });
-};
+    
+  
 
 
 //Get All Tags
