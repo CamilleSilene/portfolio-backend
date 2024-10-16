@@ -10,9 +10,9 @@ router.get("/", projectsCtrl.getAllProject);
 router.get("/tags", projectsCtrl.getAllTags);
 router.get("/tag/:tag", projectsCtrl.getProjectsByTag);
 //router.get("/tags/filters", projectsCtrl.getFiltersTags);
-router.post("/", multer, optimizeImage, projectsCtrl.createProject);
+router.post("/", auth, multer, optimizeImage, projectsCtrl.createProject);
 router.get("/:id", projectsCtrl.getOneProject);
-router.put("/:id", multer, optimizeImage, projectsCtrl.modifyProject);
-router.delete("/:id", projectsCtrl.deleteProject);
+router.put("/:id", auth,multer, optimizeImage, projectsCtrl.modifyProject);
+router.delete("/:id", auth, projectsCtrl.deleteProject);
 
 module.exports = router;
